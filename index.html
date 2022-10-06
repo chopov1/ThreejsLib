@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThePage</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <script type="module">
+        import * as THREE from "./js/three.module.js";
+
+        var scene = new THREE.Scene();
+
+        var width = window.innerWidth - 20;
+        var height = window.innerHeight - 50;
+
+        var camera = new THREE.PerspectiveCamera(50, width / height, .1, 1000);
+        camera.position.z = 20;
+        camera.updateProjectionMatrix();
+
+        var renderer = new THREE.WebGLRenderer({antialias:true});
+        renderer.setClearColor("#e5e5e5");
+        renderer.setSize(width,height);
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener("resize", ()=> {
+            renderer.setSize(width,height);
+            camera.aspect = width/height;
+            camera.updateProjectionMatrix();
+        })
+
+        const geometry = new THREE.BoxGeometry( 2, 1, 1 );
+        //const material = new THREE.MeshBasicMaterial( { color: 0xAAffff } );
+        const lamMat = new THREE.MeshLambertMaterial({color: 0xAAffff});
+        const cube = new THREE.Mesh( geometry, lamMat );
+        scene.add( cube );
+
+        const bgGeo = new THREE.SphereGeometry(20, 20, 20);
+        const bgMat = new THREE.MeshBasicMaterial({color: 0xaaaafc});
+        const bgSphere = new THREE.Mesh(bgGeo, bgMat);
+        bgSphere.position.z = -200;
+        scene.add(bgSphere);
+
+        const coneGeo = new THREE.ConeGeometry(8, 20, 30);
+        const toonMat = new THREE.MeshToonMaterial({color: 0x445566})
+        const cone = new THREE.Mesh(coneGeo, toonMat);
+        cone.position.z = - 100;
+        
+        scene.add(cone);
+
+
+        bgSphere.position.z -=2;
+        bgSphere.updateMatrix();
+
+        const shadow = new THREE.ShadowMaterial();
+        
+        const cubeShadow = new THREE.Mesh( geometry, shadow);
+        
+        scene.add(cubeShadow);
+
+        
+        const x =0, y=0;
+        const diamondShape = new THREE.Shape();
+        //diamondShape.moveTo(x + 3, y+2);
+        diamondShape.moveTo(2,0);
+        diamondShape.lineTo(-5, 6);
+        diamondShape.lineTo(-2, 8);
+        diamondShape.lineTo(5, 8);
+        diamondShape.lineTo(8, 6);
+        
+        diamondShape.lineTo(2 ,0 );
+        //diamondShape.bezierCurveTo(x+2, y+2);
+        //diamondShape.moveTo(x + 2, y+2, x+5, y+2);
+        //diamondShape.lineTo(x+2, y+2, x+5, y+2);
+        //diamondShape.bezierCurveTo(x+2, y+2, x+5, y+2);
+        //diamondShape.moveTo(x-4, y-4);
+        //diamondShape.bezierCurveTo(x+20, y-40, y -20);
+        //diamondShape.moveTo(x-5, y+5);
+        //diamondShape.bezierCurveTo(x+40, y-80);
+        
+        diamondShape.moveTo(x, y);
+
+        // diamondShape.bezierCurveTo(x+, y-5);
+        // diamondShape.bezierCurveTo(x-5, y-5);
+
+        const diamondGeo = new THREE.ShapeGeometry( diamondShape);
+        const diamondMat = new THREE.MeshToonMaterial({color:0xAABB33});
+        const diamondMesh = new THREE.Mesh(diamondGeo, diamondMat);
+        scene.add(diamondMesh);
+        
+
+        var light = new THREE.PointLight(0xAABBDD, 1 ,100);
+        light.position.set(10, 0, 25);
+        scene.add(light);
+
+        var light1 = new THREE.PointLight(0xff00ff, 1 ,100);
+        light.position.set(10, 0, 10);
+        scene.add(light1);
+
+        var dir = 1;
+
+        var render = function(){
+            requestAnimationFrame(render);
+            
+            var speed =.02;
+            cube.rotation.x += 0.001;
+            cube.rotation.y += .001;
+            cube.position.x += speed * dir;
+            cone.rotation.y += .02;
+            cone.rotation.x += .02;
+            if(cube.position.x > 20){
+                dir *= -1;
+            }
+            if(cube.position.x < -20){
+                dir *= -1;
+            }
+            
+            renderer.render(scene,camera);
+        }
+
+        render();
+
+
+
+    </script>
+    hello hello world boy oops
+</body>
+</html>
